@@ -20,7 +20,7 @@ namespace WebApplication1.Controllers
                     DisplayName = "a4j-incident-creation-deduplication-alias",
                     Auto = true,
                     Orderable = true,
-                    Searchable = false,
+                    Searchable = true,
                     Operators = new List<string> { "=", "!=", "in", "not in", "is", "is not" },
                     Types = new List<string> { "java.lang.String" }
                 },
