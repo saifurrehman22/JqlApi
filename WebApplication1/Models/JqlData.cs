@@ -1,6 +1,8 @@
-﻿namespace WebApplication1
+﻿using System.Collections.Generic;
+
+namespace WebApplication1.Models
 {
-    public class Incident
+    public class JqlData
     {
         public string Value { get; set; }
         public string DisplayName { get; set; }
