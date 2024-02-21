@@ -43,6 +43,75 @@ namespace WebApplication1.Controllers
         }
 
 
+        [HttpGet("GetAllDisplay")]
+        public IActionResult GetAllDisplay(string displayName)
+        {
+            if (string.IsNullOrEmpty(displayName))
+            {
+                return BadRequest("Display name cannot be empty.");
+            }
+      
+            var remainingDisplayNames = incidentsData
+                .Where(incident => !incident.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase))
+                .Select(incident => incident.DisplayName)
+                .Distinct()
+                .ToList();
+
+            return Ok(remainingDisplayNames);
+        }
+
+
+        [HttpGet("GetDisplayAndOperator")]
+        public IActionResult GetDisplayAndOperator(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return BadRequest("Value cannot be empty.");
+            }
+
+            var jqlData = incidentsData
+                .FirstOrDefault(incident => incident.Value.Equals(value, StringComparison.OrdinalIgnoreCase));
+
+            if (jqlData != null)
+            {
+                var result = new
+                {
+                    DisplayName = jqlData.DisplayName,
+                    Operators = jqlData.Operators
+                };
+
+                return Ok(result);
+            }
+
+            return NotFound("Value not found.");
+        }
+
+
+
+        [HttpGet("GetDetailsWithSpace")]
+        public IActionResult GetDetails(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return BadRequest("Value cannot be empty.");
+            }
+
+            var jqlData = incidentsData
+                .FirstOrDefault(incident => incident.Value.Equals(value.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (jqlData != null)
+            {
+                var result = new
+                {
+                    DisplayName = jqlData.DisplayName,
+                    Operators = value.Contains(" ") ? jqlData.Operators : null
+                };
+
+                return Ok(result);
+            }
+
+            return NotFound("Value not found.");
+        }
     }
 
    

@@ -26,7 +26,7 @@ namespace WebDataInitializer
                     Auto = true,
                     Orderable = true,
                     Searchable = true,
-                    Operators = new List<string> { "=", "!=", "in", "not in", "is", "is not" },
+                    Operators = new List<string> { "=",  "in",  "not", "is is" },
                     Types = new List<string> { "java.lang.String" }
                 }
             };
