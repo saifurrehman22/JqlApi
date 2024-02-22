@@ -112,6 +112,135 @@ namespace WebApplication1.Controllers
 
             return NotFound("Value not found.");
         }
+
+
+
+
+
+
+
+
+
+        
+        [HttpGet("GetDetailsWithSpaceInAllData")]
+        public IActionResult GetDetailsWithSpaceInAllData(string value)
+        {
+            if (value == "value" || value.Contains(" ") )
+            {
+                var allData = incidentsData
+         .Select(incident => new
+         {
+             DisplayName = incident.DisplayName,
+             Operators = value.Contains(" ") ? incident.Operators : null
+         })
+         .ToList();
+
+                if (allData.Any())
+                {
+                    return Ok(allData);
+                }
+            }
+ 
+               return NotFound("No data found.");
+        }
+
+
+
+        //   get value on base of all data 
+
+        [HttpGet("GetData")]
+        public IActionResult GetData(string searchQuery)
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery))
+            {
+                return BadRequest("Search query cannot be empty.");
+            }
+
+            var matchingData = incidentsData
+                .Where(incident =>
+                    incident.DisplayName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    incident.Value.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    incident.Types.Any(type => type.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)) ||
+                    incident.Operators.Any(op => op.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)))
+                .Select(incident => new
+                {
+                    DisplayName = incident.DisplayName,
+                    Value = incident.Value,
+                    Types = incident.Types,
+                    Operators = incident.Operators
+                })
+                .ToList();
+
+            if (matchingData.Any())
+            {
+                return Ok(matchingData);
+            }
+
+            return NotFound("No matching data found for the provided search query.");
+        }
+
+
+
+
+
+
+        //   get value on base of DispalyName
+
+        [HttpGet("GetDataFromDispalyName")]                         
+        public IActionResult GetDataFromDispalyName(string searchQuery)
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery))
+            {
+                return BadRequest("Search query cannot be empty.");
+            }
+
+            var matchingData = incidentsData
+                .Where(incident => incident.DisplayName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                .Select(incident => new
+                {
+                    DisplayName = incident.DisplayName
+                })
+                .ToList();
+
+            if (matchingData.Any())
+            {
+                return Ok(matchingData);
+            }
+
+            return NotFound("No matching data found for the provided search query.");
+        }
+
+
+
+        //  get value on base of DispalyName
+
+
+        [HttpGet("GetDataFromDispalyNameAndOperator")]
+        public IActionResult GetDataFromDispalyNameAndOperator(string searchQuery)
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery))
+            {
+                return BadRequest("Search query cannot be empty.");
+            }
+
+
+            var matchingData = incidentsData
+                .Where(incident => incident.DisplayName.Contains(searchQuery.TrimEnd(), StringComparison.OrdinalIgnoreCase))
+                .Select(incident => new
+                {
+                    DisplayName = incident.DisplayName,
+                    Operators = searchQuery.Contains(" ") ? incident.Operators : null
+                })
+                .ToList();
+
+            if (matchingData.Any())
+            {
+                return Ok(matchingData);
+            }
+
+            return NotFound("No matching data found for the provided search query.");
+        }
+
     }
 
    
